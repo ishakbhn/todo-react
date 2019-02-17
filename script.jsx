@@ -1,7 +1,8 @@
 class List extends React.Component {
   constructor(){
     super()
-    this.changeHandler = this.changeHandler.bind( this );
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   state = {
@@ -9,20 +10,41 @@ class List extends React.Component {
     word : ""
   }
 
-  changeHandler(event){
-    this.setState({word:event.target.value});
+  handleChange(event){
+    this.setState({
+        word: event.target.value
+    });
     console.log("change", event.target.value);
   }
 
-  render() {
-      // render the list with a map() here
+  handleSubmit(event){
+    event.preventDefault();
+    let addArray = this.state.list;
+        if(addArray.length != 0) {
+            addArray.push(this.state.word)
+        } else {
+            addArray = [this.state.word]
+        }
+    this.setState({
+        word: '',
+        list: addArray
+    })
+  }
 
+  render() {
+      const Lists = this.state.list.map((item, index)=>{
+        return  <li key={index}>{item}</li>
+      })
       console.log("rendering");
       return (
         <div className="list">
-          <input onChange={this.changeHandler} value={this.state.word}/>
-          <button>add item</button>
-          <p> {this.state.word} </p>
+          <form onSubmit={this.handleSubmit}>
+            <input onChange={this.handleChange} value={this.state.word} />
+            <button type="submit"> add item </button>
+          </form>
+          <ul>
+           {Lists}
+          </ul>
         </div>
       );
   }
